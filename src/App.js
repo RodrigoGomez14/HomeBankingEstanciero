@@ -2,6 +2,7 @@ import logo from './logo.svg';
 import './App.css';
 import {Component} from 'react'
 import Home from './Pages/Home'
+import Mesa from './Pages/Mesa'
 import {HashRouter,Route,Switch} from 'react-router-dom'
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 import firebase from 'firebase/app'
@@ -45,12 +46,8 @@ class App extends Component{
       <ThemeProvider theme={themeProvider}>
           <HashRouter>
             <Switch>
-              <Route exact path='/'>
-                <Home/>
-              </Route>
-              <Route exact path='/Partida'>
-                <Home/>
-              </Route>
+              <Route exact path='/' component={Home} />
+              <Route exact path='/Mesa' component={Mesa}/>
             </Switch>
           </HashRouter>
       </ThemeProvider>

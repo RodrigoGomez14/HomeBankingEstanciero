@@ -3,6 +3,7 @@ import {Dialog,DialogTitle,DialogContent,DialogActions,Button,TextField, Typogra
 import {ToggleButton, ToggleButtonGroup} from '@material-ui/lab'
 import { makeStyles } from '@material-ui/styles'
 import firebase from 'firebase'
+import {Link, Redirect} from 'react-router-dom'
 const useStyles = makeStyles({
     content:{
         display:'flex',
@@ -11,7 +12,7 @@ const useStyles = makeStyles({
         alignItems:'center'
     }
 })
-const NuevaMesa = ({open,handleClose}) =>{
+const NuevaMesa = ({open,handleClose,history}) =>{
     const classes = useStyles()
     const [jugadores,setJugadores] = useState('')
     const [nombre,setnombre] = useState('')
@@ -23,10 +24,14 @@ const NuevaMesa = ({open,handleClose}) =>{
         return Math.trunc(id)
     }
     const crearSala= async ()=>{
-        await firebase.database().ref().child(generarID()).update({
+        const id = generarID()
+        await firebase.database().ref().child(id).update({
             max:jugadores,
-            [`${nombre}`]:30000
+            pinBanco:generarID(),
+            jugadores:[{nombre:nombre,efectivo:30000}]
         })
+        handleClose()
+        history.push({pathname:'/Mesa',id:id})
     }
     return(
         <Dialog open={open} onclose={handleClose}>
@@ -48,9 +53,9 @@ const NuevaMesa = ({open,handleClose}) =>{
                 <Button onClick={handleClose} color="primary">
                     Cancelar
                 </Button>
-                <Button onClick={()=>{crearSala()}} color="primary" disabled={nombre&&jugadores? false:true}>
-                    Crear sala
-                </Button>
+                    <Button onClick={()=>{crearSala()}} color="primary" disabled={nombre&&jugadores? false:true}>
+                        Crear sala
+                    </Button>
                 </DialogActions>
         </Dialog>
     )

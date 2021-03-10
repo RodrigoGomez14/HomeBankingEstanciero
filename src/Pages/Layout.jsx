@@ -15,14 +15,12 @@ const useStyles = makeStyles({
         borderRadius:0,
     }
 })
-const Layout = ({children}) =>{
+const Layout = ({children,id,goBack,pinBanco}) =>{
     const classes = useStyles()
     return(
         <Container className={classes.root}>
-            <Appbar/>
-            <Paper elevation={3} className={classes.body}>
-                {children}
-            </Paper>
+            <Appbar id={id} goBack={goBack} pinBanco={pinBanco}/>
+            {children}
         </Container>
     )
 }
