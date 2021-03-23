@@ -1,10 +1,12 @@
 import React, {useState} from 'react'
-import {Paper,Button,Grid, TextField} from '@material-ui/core'
+import {Paper,Button,Grid, TextField,Avatar} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
 import Layout from '../Pages/Layout'
 import NuevaMesa from '../Dialogs/NuevaMesa'
 import { Link } from 'react-router-dom'
-const useStyles = makeStyles({
+import {connect} from 'react-redux'
+import PlayerCard from '../Components/PlayerCard'
+const useStyles = makeStyles(theme=>({
     title:{
         color:'white',
         textAlign:'center'
@@ -18,8 +20,8 @@ const useStyles = makeStyles({
     },
     grid:{
         margin:0
-    }
-})
+    },
+}))
 const Home = (props) =>{
     const classes = useStyles()
     const [openNuevaMesa,setOpenNuevaMesa] = useState(false)
@@ -46,8 +48,14 @@ const Home = (props) =>{
     }
     return(
         <Layout history={props.history}>
+            {console.log(props.user)}
             <Paper elevation={3} className={classes.paper}>
                 <Grid container  direction='column' justify='center' alignItems='center' spacing={3} className={classes.grid}>
+                    <Grid container item>
+                        <Grid item xs={12}>
+                            <PlayerCard img={props.user.photoURL} nombre={props.user.displayName} />
+                        </Grid>
+                    </Grid>
                     <NuevaMesa open={openNuevaMesa} handleClose={()=>{closeDialog('Nueva Mesa')}} history={props.history}/>
                     <Grid item>
                         <Button variant='contained' onClick={()=>{openDialog('Nueva Mesa')}}>Crear Mesa</Button>
@@ -77,5 +85,9 @@ const Home = (props) =>{
         </Layout>
     )
 }
-
-export default Home
+const mapStateToProps = state =>{
+    return{
+        user:state.user,
+    }
+}
+export default connect(mapStateToProps,null)(Home)
