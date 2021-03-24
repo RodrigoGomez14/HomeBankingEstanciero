@@ -3,16 +3,26 @@ import {AppBar,Toolbar,Typography,IconButton,Menu,MenuItem} from '@material-ui/c
 import {ArrowBack,MenuOutlined} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import ConfirmExit from '../Dialogs/ConfirmExit'
+import firebase from 'firebase'
 const useStyles = makeStyles({
     title:{
         flexGrow:'1'
     }
 })
-const Appbar = ({id,goBack,pinBanco}) =>{
+const Appbar = ({id,goBack,pinBanco,showMenu}) =>{
     const classes = useStyles()
     const [openDialog, setopenDialog] = useState(false)
     const [anchorEl, setAnchorEl] = useState(null);
     const [ocultarPin, setocultarPin] = useState(true);
+
+    const handleClick = (event) => {
+        setAnchorEl(event.currentTarget);
+      };
+    
+      const handleClose = () => {
+        firebase.auth().signOut()
+        setAnchorEl(null);
+      };
 
     return(
         <AppBar position='static'>
@@ -32,6 +42,24 @@ const Appbar = ({id,goBack,pinBanco}) =>{
                         'HomeBanking Estanciero'
                     }
                 </Typography>
+                {showMenu!=false?
+                <>
+                    <IconButton onClick={handleClick}>
+                        <MenuOutlined />
+                    </IconButton>
+                    <Menu
+                        id="simple-menu"
+                        anchorEl={anchorEl}
+                        keepMounted
+                        open={Boolean(anchorEl)}
+                        onClose={handleClose}
+                    >
+                        <MenuItem onClick={handleClose}>SignOut</MenuItem>
+                    </Menu>
+                </>
+                    :
+                    null
+                }
             </Toolbar>
         </AppBar>
     )

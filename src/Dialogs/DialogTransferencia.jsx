@@ -21,16 +21,19 @@ const DialogTransferencia = ({open,handleClose,jugadores,id,remitente}) =>{
     }
     const transferir = () =>{
         let aux = jugadores
-        aux.map((jugador,i)=>{
-            if(jugador.nombre===destinatario){
-                console.log(aux[i].efectivo)
+
+        Object.keys(jugadores).map((id,i)=>{
+            console.log(jugadores[id])
+            if(jugadores[id].nombre===destinatario){
+                console.log(aux[id].efectivo)
                 console.log(cantidad)
-                aux[i].efectivo=aux[i].efectivo+parseInt(cantidad)
+                jugadores[id].efectivo=jugadores[id].efectivo+parseInt(cantidad)
             }
-            if(jugador.nombre===remitente){
-                aux[i].efectivo=aux[i].efectivo-cantidad
+            if(jugadores[id].nombre===remitente){
+                jugadores[id].efectivo=jugadores[id].efectivo-cantidad
             }
         })
+        console.log(jugadores)
         firebase.database().ref().child(id).update({
             jugadores:jugadores
         })
@@ -46,15 +49,17 @@ const DialogTransferencia = ({open,handleClose,jugadores,id,remitente}) =>{
             <DialogTitle>Transferencia</DialogTitle>
             <DialogContent>
                 <ToggleButtonGroup exclusive value={destinatario} onChange={handleChange}>
-                    {jugadores.map(jugador=>
-                        (jugador.nombre!=remitente?
-                            <>
-                                {console.log(jugador.nombre,remitente)}
-                                <ToggleButton value={jugador.nombre}>{jugador.nombre}</ToggleButton>
-                            </>
+                    {
+                    jugadores?
+                    Object.keys(jugadores).map(id=>
+                        (jugadores[id].nombre!=remitente?
+                            <ToggleButton value={jugadores[id].nombre}>{jugadores[id].nombre}</ToggleButton>
                             :null
                         )
-                    )}
+                    )
+                    :
+                    null
+                    }
                 </ToggleButtonGroup>
                 <TextField label='Cantidad' value={cantidad} type='number' onChange={e=>{setcantidad(e.target.value)}}/>
             </DialogContent>

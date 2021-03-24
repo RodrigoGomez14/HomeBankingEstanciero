@@ -9,11 +9,11 @@ const useStyles = makeStyles(theme=>({
         height: theme.spacing(7),
     },
 }))
-const PlayerCard = ({img,nombre}) =>{
+const PlayerCard = ({img,nombre,efectivo}) =>{
     const classes = useStyles()
     return(
         <Paper elevation={3} className={classes.paper}>
-            <Grid container direction='column' alignItems='center' spacing={2}>
+            <Grid container direction='column' alignItems='center'>
                 <Grid item>
                     <Avatar src={img} className={classes.large}/>
                 </Grid>
@@ -24,7 +24,7 @@ const PlayerCard = ({img,nombre}) =>{
                 </Grid>
                 <Grid item>
                     <Typography variant='h3'>
-                        $35000
+                        $ {efectivo}
                     </Typography>
                 </Grid>
             </Grid>

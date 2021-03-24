@@ -6,11 +6,8 @@ import NuevaMesa from '../Dialogs/NuevaMesa'
 import { Link } from 'react-router-dom'
 import {connect} from 'react-redux'
 import PlayerCard from '../Components/PlayerCard'
+import firebase from 'firebase'
 const useStyles = makeStyles(theme=>({
-    title:{
-        color:'white',
-        textAlign:'center'
-    },
     paper:{
         background:'#008ba3',
         display:'flex',
@@ -18,16 +15,12 @@ const useStyles = makeStyles(theme=>({
         borderRadius:0,
         height:'calc(100vh - 56px)'
     },
-    grid:{
-        margin:0
-    },
 }))
 const Home = (props) =>{
     const classes = useStyles()
     const [openNuevaMesa,setOpenNuevaMesa] = useState(false)
     const [showInput,setShowInput] = useState(false)
     const [id,setid] = useState('')
-    const [nombre,setnombre] = useState('')
     const openDialog = type =>{
         switch (type) {
             case 'Nueva Mesa':
@@ -46,42 +39,70 @@ const Home = (props) =>{
                 break;
         }
     }
+    const generarID = () =>{
+        const id = Math.random()*10000
+        return Math.trunc(id)
+    }
+    const crearSala= async (max) =>{
+        const id = generarID()
+        await firebase.database().ref().child(id).update({
+            max:max,
+            pinBanco:generarID(),
+            jugadores:{
+                [`${props.user.uid}`]:{efectivo:30000, nombre:props.user.displayName}
+            }
+        })
+        props.history.push({pathname:'/Mesa',id:id})
+    }
+    const entrarASala = async () =>{
+        let max = 0
+        let length = 0
+        let jugadores = {}
+        await firebase.database().ref().child(id).child('max').once('value',(snapshot)=>{
+            max=snapshot.val()
+        })
+        await firebase.database().ref().child(id).child('jugadores').once('value',(snapshot)=>{
+            jugadores = snapshot.val()
+        })
+        if(Object.keys(jugadores).length<max){
+            await firebase.database().ref().child(id).update({
+                jugadores:{
+                    ...jugadores,
+                    [`${props.user.uid}`]:{efectivo:30000, nombre:props.user.displayName}
+                }
+            })
+            props.history.push({pathname:'/Mesa',id:id})
+        }
+    }
     return(
         <Layout history={props.history}>
             {console.log(props.user)}
-            <Paper elevation={3} className={classes.paper}>
-                <Grid container  direction='column' justify='center' alignItems='center' spacing={3} className={classes.grid}>
-                    <Grid container item>
-                        <Grid item xs={12}>
-                            <PlayerCard img={props.user.photoURL} nombre={props.user.displayName} />
-                        </Grid>
+            <NuevaMesa open={openNuevaMesa} handleClose={()=>{closeDialog('Nueva Mesa')}} crearSala={crearSala} />
+            <Grid container className={classes.grid}>
+                <Grid container item>
+                    <Grid item xs={12}>
+                        <PlayerCard img={props.user.photoURL} nombre={props.user.displayName} />
                     </Grid>
-                    <NuevaMesa open={openNuevaMesa} handleClose={()=>{closeDialog('Nueva Mesa')}} history={props.history}/>
-                    <Grid item>
-                        <Button variant='contained' onClick={()=>{openDialog('Nueva Mesa')}}>Crear Mesa</Button>
-                    </Grid>
-                    <Grid item >
-                        <Button variant='contained' onClick={()=>{setShowInput(true)}}>Ingresar con ID</Button>
-                    </Grid>
-                    {showInput?
-                    <>
-                        <Grid item >
-                            <TextField id="outlined-basic" label="Nombre" type='text' variant="outlined" value={nombre} onChange={e=>{setnombre(e.target.value)}} />
-                        </Grid>
-                        <Grid item >
-                            <TextField id="outlined-basic" label="ID" type='number' variant="outlined" value={id} onChange={e=>{setid(e.target.value)}} />
-                        </Grid>
-                        <Grid item>
-                            <Link to={{pathname:'/Mesa',id:id,nombre:nombre}} >
-                                <Button variant='outlined' disabled={nombre&&id? false:true}>Ingresar!</Button>
-                            </Link>
-                        </Grid>
-                    </>
-                        :
-                        null
-                    }
                 </Grid>
-            </Paper>
+                <Grid item>
+                    <Button variant='contained' onClick={()=>{openDialog('Nueva Mesa')}}>Crear Mesa</Button>
+                </Grid>
+                <Grid item >
+                    <Button variant='contained' onClick={()=>{setShowInput(true)}}>Ingresar con ID</Button>
+                </Grid>
+                {showInput?
+                <>
+                    <Grid item >
+                        <TextField autoFocus id="outlined-basic" label="ID" type='number' variant="outlined" value={id} onChange={e=>{setid(e.target.value)}} />
+                    </Grid>
+                    <Grid item>
+                        <Button onClick={()=>{entrarASala()}} variant='outlined' disabled={id? false:true}>Ingresar!</Button>
+                    </Grid>
+                </>
+                    :
+                    null
+                }
+            </Grid>
         </Layout>
     )
 }

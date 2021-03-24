@@ -5,6 +5,8 @@ import Layout from '../Pages/Layout'
 import DialogFullRoom from '../Dialogs/DialogFullRoom'
 import firebase from 'firebase'
 import DialogTransferencia from '../Dialogs/DialogTransferencia'
+import {connect} from 'react-redux'
+import PlayerCard from '../Components/PlayerCard'
 
 const useStyles = makeStyles({
     title:{
@@ -29,6 +31,7 @@ const Mesa = (props) =>{
     const [dialogTransferencia,setdialogTransferencia] = useState(false)
     const [jugadores,setjugadores] = useState([])
     const [pinBanco,setpinBanco] = useState(undefined)
+
     const goBack= async() =>{
         let aux = jugadores
         let jugadoresPerdidos =[]
@@ -39,53 +42,34 @@ const Mesa = (props) =>{
                 aux[i].efectivo=0
             }
         })
-        firebase.database().ref().child(props.location.id).update({
+        await firebase.database().ref().child(props.location.id).update({
             jugadoresPerdidos:jugadoresPerdidos,
             jugadores:aux
         })
         props.history.goBack()
     }
     useEffect(() => {
-        const fetchData= async () =>{
-            await firebase.database().ref(props.location.id).child('jugadores').on('value',(snapshot)=>{
-                setjugadores(snapshot.val())
-            })
-            obtenerPinBanco()
-            setloading(false)
-        }
-        const checkJugadores= async () =>{
-            let max = 0
-            await firebase.database().ref(props.location.id).child('max').once('value',snapshot=>{max=snapshot.val()})
-            await firebase.database().ref(props.location.id).child('jugadores').once('value',(snapshot)=>{
-                let jugadores = snapshot.val()
-                if(jugadores.length!=max){
-                    jugadores.push({nombre:props.location.nombre,efectivo:30000})
-                    firebase.database().ref().child(props.location.id).update({
-                        jugadores:jugadores
-                    })
-                    fetchData()
-                }
-                else{
-                    setdialogFullRoom(true)
-                }
-            })
-        }
-        if(!props.location.nombre){
-            fetchData()
+        if(!props.location.id){
+            props.history.goBack()
         }
         else{
-            checkJugadores()
+            const fetchData= async () =>{
+                await firebase.database().ref(props.location.id).child('jugadores').on('value',(snapshot)=>{
+                    setjugadores(snapshot.val())
+                })
+                obtenerPinBanco()
+                setloading(false)
+            }
+            fetchData()
         }
     }, [])
     const obtenerPinBanco = async () =>{
         await firebase.database().ref(props.location.id).child('pinBanco').on('value',(snapshot)=>{
-            console.log(snapshot.val())
             setpinBanco(snapshot.val())
         })
     }
     return(
         <Layout id={props.location.id} goBack={goBack} pinBanco={pinBanco}>
-            {console.log(pinBanco)}
             <Paper elevation={3} className={classes.paper}>
                 {loading?
                     <>
@@ -94,14 +78,31 @@ const Mesa = (props) =>{
                     </>
                     :
                     <Grid container className={classes.grid}>
-                        <DialogTransferencia open={dialogTransferencia} handleClose={()=>{setdialogTransferencia(false)}} jugadores={jugadores} id={props.location.id} remitente={props.location.nombre}/>
-                        {jugadores.map((jugador,i)=>(
-                            <Grid item xs={12} key={i}>
-                                {console.log(jugador)}
-                                <Typography>{jugador.nombre}</Typography>
-                                <Typography>$ {jugador.efectivo}</Typography>
-                            </Grid>
-                        ))}
+                        <Grid item xs={12}>
+                            {jugadores?
+                                <PlayerCard nombre={props.user.displayName} efectivo={jugadores[props.user.uid].efectivo}/>
+                                :
+                                null
+                            }
+                        </Grid>
+                        <DialogTransferencia open={dialogTransferencia} handleClose={()=>{setdialogTransferencia(false)}} jugadores={jugadores} id={props.location.id} remitente={props.user.displayName}/>
+                        {
+                            jugadores?
+                                Object.keys(jugadores).map((id,i)=>(
+                                    <>
+                                        {
+                                            id!=props.user.uid?
+                                                <Grid item xs={12}>
+                                                    <PlayerCard nombre={jugadores[id].nombre} efectivo={jugadores[id].efectivo}/>
+                                                </Grid>
+                                                :
+                                                null
+                                        }
+                                    </>
+                                ))
+                                :
+                                null
+                        }
                         <Grid item xs={12} alignItems='center'>
                             <Button variant='contained' onClick={()=>{setdialogTransferencia(true)}} color="primary">
                                 Transferir
@@ -114,4 +115,9 @@ const Mesa = (props) =>{
     )
 }
 
-export default Mesa
+const mapStateToProps = state =>{
+    return{
+        user:state.user,
+    }
+}
+export default connect(mapStateToProps,null)(Mesa)

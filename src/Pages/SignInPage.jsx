@@ -11,18 +11,11 @@ const useStyles = makeStyles({
         color:'white',
         textAlign:'center'
     },
-    paper:{
-        background:'#008ba3',
-        display:'flex',
-        justifyContent:'center',
-        borderRadius:0,
-        height:'calc(100vh - 56px)'
-    },
     input:{
         width:'100%'
     },
     grid:{
-        margin:0
+        height:'100%'
     }
 })
 const SignInPage = (props) =>{
@@ -43,40 +36,40 @@ const SignInPage = (props) =>{
         //firebase.auth().signInWithPopup()
     }
     return(
-        <Layout history={props.history}>
-            <Paper elevation={3} className={classes.paper}>
-                <Grid container  direction='column' justify='center'  spacing={6} className={classes.grid}>
-                    <Grid item container spacing={2} justify='center' direction='column'> 
-                        <Grid item xs={12}>
-                            <TextField variant='outlined' className={classes.input} value={email} onChange={e=>{setemail(e.target.value)}} type='email' >E-mail</TextField>
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField variant='outlined' className={classes.input} value={password} onChange={e=>{setpassword(e.target.value)}} type='password' >Contraseña</TextField>
-                        </Grid>
-                        <Grid container item xs={12} justify='center'>
+        <Layout history={props.history} showMenu={false}>
+            <Grid container  className={classes.grid}>
+                <Grid container item justify='center' alignItems='center'> 
+                    <Grid item xs={10}>
+                        <TextField variant='outlined' className={classes.input} value={email} onChange={e=>{setemail(e.target.value)}} type='email' >E-mail</TextField>
+                    </Grid>
+                    <Grid item xs={10}>
+                        <TextField variant='outlined' className={classes.input} value={password} onChange={e=>{setpassword(e.target.value)}} type='password' >Contraseña</TextField>
+                    </Grid>
+                    <Grid container item xs={12} justify='center'>
+                        <Grid item>
                             <Button variant='outlined' onClick={()=>{ingresarConEmailYPassword()}}>Ingresar</Button>
                         </Grid>
                     </Grid>
-                    <Grid item container> 
-                        <Grid item xs={12}>
-                            <Divider/>
-                        </Grid>
+                </Grid>
+                <Grid container item> 
+                    <Grid item xs={12}>
+                        <Divider/>
                     </Grid>
-                    <Grid item container alignItems='center' direction='column' spacing={2}>
-                        <Grid item >
-                            <Typography variant='small'> O ingresa con </Typography>
+                </Grid>
+                <Grid container item>
+                    <Grid item >
+                        <Typography variant='small'> O ingresa con </Typography>
+                    </Grid>
+                    <Grid container item xs={12} justify='center' spacing={3}>
+                        <Grid item>
+                            <Button variant='contained' onClick={()=>{signIn()}}>Google</Button>
                         </Grid>
-                        <Grid container item xs={12} justify='center' spacing={3}>
-                            <Grid item>
-                                <Button variant='contained' onClick={()=>{signIn()}}>Google</Button>
-                            </Grid>
-                            <Grid item>
-                                <IconButton><Apple/></IconButton>
-                            </Grid>
+                        <Grid item>
+                            <IconButton><Apple/></IconButton>
                         </Grid>
                     </Grid>
                 </Grid>
-            </Paper>
+            </Grid>
         </Layout>
     )
 }

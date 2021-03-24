@@ -12,26 +12,15 @@ const useStyles = makeStyles({
         alignItems:'center'
     }
 })
-const NuevaMesa = ({open,handleClose,history}) =>{
+const NuevaMesa = ({open,handleClose,crearSala}) =>{
     const classes = useStyles()
     const [jugadores,setJugadores] = useState('')
-    const [nombre,setnombre] = useState('')
     const handlechange = (event, value) => {
         setJugadores(value)
     };
-    const generarID = () =>{
-        const id = Math.random()*10000
-        return Math.trunc(id)
-    }
-    const crearSala= async ()=>{
-        const id = generarID()
-        await firebase.database().ref().child(id).update({
-            max:jugadores,
-            pinBanco:generarID(),
-            jugadores:[{nombre:nombre,efectivo:30000}]
-        })
+    const handleClick = () =>{
+        crearSala(jugadores)
         handleClose()
-        history.push({pathname:'/Mesa',id:id})
     }
     return(
         <Dialog open={open} onclose={handleClose}>
@@ -47,13 +36,12 @@ const NuevaMesa = ({open,handleClose,history}) =>{
                     <ToggleButton value='5'>5</ToggleButton>
                     <ToggleButton value='6'>6</ToggleButton>
                 </ToggleButtonGroup>
-                <TextField label='Nombre' value={nombre} onChange={e=>{setnombre(e.target.value)}}/>
             </DialogContent>
             <DialogActions>
                 <Button onClick={handleClose} color="primary">
                     Cancelar
                 </Button>
-                    <Button onClick={()=>{crearSala()}} color="primary" disabled={nombre&&jugadores? false:true}>
+                    <Button onClick={()=>{handleClick()}} color="primary" disabled={jugadores? false:true}>
                         Crear sala
                     </Button>
                 </DialogActions>

@@ -50,6 +50,7 @@ class App extends Component{
         localStorage.setItem('theme','light')
     }
   }
+  
   render(){
     const themeProvider = createMuiTheme({
         palette: {
@@ -79,7 +80,7 @@ class App extends Component{
       return(
         <div className="App justify-content-center">
           <ThemeProvider theme={themeProvider}>
-              <PantallaDeCarga/>
+              <PantallaDeCarga loading={this.state.loading}/>
           </ThemeProvider>
         </div>
       )
