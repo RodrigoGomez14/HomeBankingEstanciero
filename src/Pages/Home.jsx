@@ -91,14 +91,14 @@ const Home = (props) =>{
                     <Button variant='contained' onClick={()=>{setShowInput(true)}}>Ingresar con ID</Button>
                 </Grid>
                 {showInput?
-                <>
+                <form>
                     <Grid item >
                         <TextField autoFocus id="outlined-basic" label="ID" type='number' variant="outlined" value={id} onChange={e=>{setid(e.target.value)}} />
                     </Grid>
                     <Grid item>
                         <Button onClick={()=>{entrarASala()}} variant='outlined' disabled={id? false:true}>Ingresar!</Button>
                     </Grid>
-                </>
+                </form>
                     :
                     null
                 }

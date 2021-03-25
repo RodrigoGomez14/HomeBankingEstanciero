@@ -4,11 +4,14 @@ import {ArrowBack,MenuOutlined} from '@material-ui/icons'
 import {makeStyles} from '@material-ui/styles'
 import ConfirmExit from '../Dialogs/ConfirmExit'
 import firebase from 'firebase'
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme=>({
     title:{
         flexGrow:'1'
+    },
+    bar:{
+        background:theme.palette.primary.dark
     }
-})
+}))
 const Appbar = ({id,goBack,pinBanco,showMenu}) =>{
     const classes = useStyles()
     const [openDialog, setopenDialog] = useState(false)
@@ -25,7 +28,7 @@ const Appbar = ({id,goBack,pinBanco,showMenu}) =>{
       };
 
     return(
-        <AppBar position='static'>
+        <AppBar position='static' className={classes.bar}>
             <ConfirmExit open={openDialog} handleClose={()=>{setopenDialog(false)}} goBack={()=>{goBack()}}/>
             <Toolbar>
                 {id?

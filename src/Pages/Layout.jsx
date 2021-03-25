@@ -2,7 +2,7 @@ import React from 'react'
 import Appbar from '../Components/Appbar'
 import {Container,Grid} from '@material-ui/core'
 import {makeStyles} from '@material-ui/styles'
-const useStyles = makeStyles({
+const useStyles = makeStyles(theme=>({
     root:{
     },
     body:{
@@ -11,10 +11,14 @@ const useStyles = makeStyles({
         borderRadius:0,
     },
     paper:{
-        background:'#008ba3',
-
+        background:theme.palette.primary.main,
+        height: 'calc(100vh - 56px)'
     },
-})
+    loading:{
+        background:theme.palette.primary.main,
+        height: '100vh'
+    }
+}))
 const Layout = ({children,id,goBack,pinBanco,loading,showMenu}) =>{
     const classes = useStyles()
     return(
@@ -24,7 +28,7 @@ const Layout = ({children,id,goBack,pinBanco,loading,showMenu}) =>{
                 :
                 <Appbar id={id} goBack={goBack} pinBanco={pinBanco} showMenu={showMenu}/>
             }
-                <div className={classes.paper}>
+                <div className={loading?classes.loading:classes.paper}>
                     {children}
                 </div>
         </Grid>

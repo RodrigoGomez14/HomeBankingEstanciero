@@ -1,5 +1,5 @@
 import React from 'react'
-import {makeStyles,CircularProgress,Grid} from '@material-ui/core'
+import {makeStyles,CircularProgress,Grid,Typography} from '@material-ui/core'
 import Layout from '../Pages/Layout'
 
 const useStyles=makeStyles(theme=>({
@@ -16,16 +16,22 @@ const useStyles=makeStyles(theme=>({
         color:theme.palette.primary.contrastText,
     },
     grid:{
-        heigth:'100%'
+        height:'100%',
+    },
+    text:{
+        color:theme.palette.primary.contrastText
     }
 }))
 const PantallaDeCarga = loading =>{
     const classes = useStyles()
     return(
         <Layout loading={loading} showMenu={false} >
-            <Grid container justify='center' alignItems='center' className={classes.grid}>
+            <Grid container justify='center' alignItems='center' direction='column' className={classes.grid}>
+                <Grid item >
+                    <CircularProgress color='secondary'/>
+                </Grid>
                 <Grid item>
-                    <CircularProgress/>
+                    <Typography variant='overline' className={classes.text}>Cargando</Typography>
                 </Grid>
             </Grid>
         </Layout>

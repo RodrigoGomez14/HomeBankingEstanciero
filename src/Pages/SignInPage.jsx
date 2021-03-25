@@ -12,10 +12,11 @@ const useStyles = makeStyles({
         textAlign:'center'
     },
     input:{
-        width:'100%'
     },
     grid:{
-        height:'100%'
+    },
+    text:{
+        color:'white'
     }
 })
 const SignInPage = (props) =>{
@@ -40,27 +41,22 @@ const SignInPage = (props) =>{
             <Grid container  className={classes.grid}>
                 <Grid container item justify='center' alignItems='center'> 
                     <Grid item xs={10}>
-                        <TextField variant='outlined' className={classes.input} value={email} onChange={e=>{setemail(e.target.value)}} type='email' >E-mail</TextField>
+                        <TextField label='E-Mail' color='secondary' variant='outlined' className={classes.input} value={email} onChange={e=>{setemail(e.target.value)}} type='email'/>
                     </Grid>
                     <Grid item xs={10}>
-                        <TextField variant='outlined' className={classes.input} value={password} onChange={e=>{setpassword(e.target.value)}} type='password' >Contraseña</TextField>
+                        <TextField label='Password' color='secondary' variant='outlined' className={classes.input} value={password} onChange={e=>{setpassword(e.target.value)}} type='password'/>
                     </Grid>
                     <Grid container item xs={12} justify='center'>
                         <Grid item>
-                            <Button variant='outlined' onClick={()=>{ingresarConEmailYPassword()}}>Ingresar</Button>
+                            <Button color='secondary' variant='contained' onClick={()=>{ingresarConEmailYPassword()}}>Ingresar</Button>
                         </Grid>
                     </Grid>
                 </Grid>
-                <Grid container item> 
-                    <Grid item xs={12}>
-                        <Divider/>
-                    </Grid>
-                </Grid>
                 <Grid container item>
-                    <Grid item >
-                        <Typography variant='small'> O ingresa con </Typography>
+                    <Grid container item justify='center'>
+                        <Typography variant='small' className={classes.text}> O ingresa con </Typography>
                     </Grid>
-                    <Grid container item xs={12} justify='center' spacing={3}>
+                    <Grid container item xs={12} justify='center'>
                         <Grid item>
                             <Button variant='contained' onClick={()=>{signIn()}}>Google</Button>
                         </Grid>

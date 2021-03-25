@@ -56,16 +56,16 @@ class App extends Component{
         palette: {
             white:'#fff',
             primary: {
-              light: '#5e92f3',
-              main: '#1565c0',
-              dark: '#003c8f',
+              light: '#48a999',
+              main: '#00796b',
+              dark: '#004c40',
               contrastText: '#fff',
             },
             secondary: {
-              light: '#4f5b62',
-              main: '#263238',
-              dark: '#000a12',
-              contrastText: '#000',
+              light: '#ff5c8d',
+              main: '#d81b60',
+              dark: '#a00037',
+              contrastText: '#fff',
             },
             danger:{
               main:'#c62828'
